@@ -19,8 +19,8 @@ st.set_page_config(
 # Initialize session state for login status and app settings
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
-#if 'openai_key' not in st.session_state:
-    # Default key (will be overridden by user input)
+if 'openai_key' not in st.session_state:
+    st.session_state.openai_key = ""  # Initialize with empty string
 if 'model_choice' not in st.session_state:
     st.session_state.model_choice = "gpt-4o-mini"  # Default model
 # Default analysis prompt - store in session state so users can modify it
