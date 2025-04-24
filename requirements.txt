@@ -1,0 +1,10 @@
+streamlit
+pandas
+openai
+plotly
+io
+numpy
+traceback
+time
+PIL
+hashlib
