@@ -916,19 +916,37 @@ For each recommendation:
             enhanced_prompt = f"""
 {prompt_text}
 
-IMPORTANT INSTRUCTIONS:
-1. Analyze the retail data based on the question above
-2. Provide specific, actionable insights with supporting data
-3. Include 2-3 relevant visualizations that directly support your findings
-4. Format your response with clear section headers 
-5. End with 3-5 concrete, data-driven recommendations
+ABSOLUTELY CRITICAL REQUIREMENTS:
+
+1. CALCULATIONS - You MUST execute code to calculate:
+   - Growth rates and trends for all key metrics
+   - Correlation analysis between price, quantity, revenue, and profit
+   - Segmentation analysis by product, category, and region
+   - Detailed profitability metrics (margins, ROI) with exact values
+   - Statistical significance of any findings
+   - Forecasts based on historical trends
+
+2. VISUALIZATIONS - You MUST create and display:
+   - AT LEAST 5 different detailed visualizations
+   - Time series analysis showing trends over time
+   - Comparative analysis between products/categories
+   - Correlation or relationship analysis 
+   - Segmentation analysis visualization
+   - Forecast visualization showing future scenarios
+
+3. OUTPUT REQUIREMENTS:
+   - NEVER show your code, only the results and visualizations
+   - Format ALL numbers with proper notation ($1,234.56, 12.3%)
+   - Make ALL visualizations professional with proper titles, labels, and legends
+   - Focus ONLY on business-relevant insights
+   - End with specific, actionable, quantified recommendations
 
 DATA SUMMARY:
 - Rows: {df.shape[0]}, Columns: {df.shape[1]}
 - Column names: {', '.join(df.columns.tolist())}
 {data_summary[:500]}... (summary truncated)
 
-Please make your analysis concise and directly answer the question asked.
+YOUR PERFORMANCE WILL BE EVALUATED on the depth of calculations, number of visualizations, and business relevance of your analysis. You MUST execute code to perform calculations and create visualizations.
 """
             
             # Update progress for step 1
@@ -980,44 +998,70 @@ Please make your analysis concise and directly answer the question asked.
             # Create an assistant with the code interpreter tool
             assistant = client.beta.assistants.create(
                 name="Retail Category Analyst",
-                instructions="""You are a retail category analyst for EcoWise. Create detailed, structured retail analytics reports with visualizations.
+                instructions="""You are a retail category analyst for EcoWise. Create EXTREMELY detailed, data-rich retail analytics reports with advanced visualizations.
+
+EXECUTION REQUIREMENTS (YOU MUST FOLLOW THESE):
+- You MUST execute code to perform extensive calculations (growth rates, correlations, segmentations)
+- You MUST create AT LEAST 5 different detailed visualizations
+- Your visualizations MUST include at minimum:
+  1. A time series analysis chart
+  2. A detailed product/category comparison visualization 
+  3. A correlation or relationship analysis chart
+  4. A segmentation analysis visualization
+  5. A forecast or what-if scenario visualization
+- ALL visualizations MUST be professionally formatted with clear titles, labels and legends
+- Show ONLY your executed results and visualizations, NEVER show code
+- Format ALL numbers precisely ($1,234.56 for currency, 12.3% for percentages)
+
+REQUIRED CALCULATIONS (YOU MUST PERFORM THESE):
+- Calculate YoY or period-over-period growth rates for key metrics
+- Calculate correlation coefficients between key variables
+- Perform segmentation analysis (by product, category, region, etc.)
+- Calculate profitability and efficiency metrics (margins, ROI, etc.)
+- Conduct statistical tests where appropriate (e.g., significance testing)
+- Identify outliers and their impact on the business
 
 REPORT STRUCTURE:
 1. 🔍 OBJECTIVES
    - Summarize the key objectives and business questions
-   - State what the analysis will address
 
-2. 📊 CATEGORY PERFORMANCE OVERVIEW
-   - Present overall performance metrics with visualizations
-   - Analyze trends, growth rates, and category health
-   - Include a visualization of key metrics
+2. 📊 PERFORMANCE OVERVIEW
+   - MUST include detailed KPI calculations with growth rates
+   - MUST include time series visualization of key metrics
+   - MUST highlight statistical significance of trends
 
-3. 🧱 SEGMENT/PRODUCT SCORECARD
-   - Create a detailed breakdown by segment or products
-   - Include a table or chart showing comparative metrics
-   - Analyze the relationship between segments
+3. 🧱 SEGMENT ANALYSIS
+   - MUST include detailed breakdown with exact calculations
+   - MUST show comparative visualization between segments
+   - MUST identify top/bottom performing segments with specific values
 
-4. 🔬 PRODUCT PRODUCTIVITY ANALYSIS
-   - Analyze product performance metrics in depth
-   - Create visualizations of top/bottom performers
-   - Calculate key retail metrics (e.g., rate of sale, GMROI)
+4. 🔬 PRODUCT ANALYSIS
+   - MUST include product-level metrics with precise calculations
+   - MUST show correlation analysis between product metrics
+   - MUST include visualization of product performance distribution
 
-5. 📏 GAPS & OPPORTUNITIES
-   - Identify underserved segments or product gaps
-   - Analyze competitive positioning
-   - Suggest potential new products or categories
+5. 📏 OPPORTUNITIES ANALYSIS
+   - MUST quantify the size of identified opportunities in $ terms
+   - MUST include statistical evidence supporting the opportunities
+   - MUST show forecasted impact of addressing opportunities
 
 6. 📎 RECOMMENDATIONS
-   - Provide 3-5 data-driven, actionable recommendations
-   - Support each with specific data points
-   - Quantify potential impact where possible
+   - MUST provide 3-5 data-driven recommendations
+   - MUST quantify the expected impact of each recommendation
+   - MUST include prioritization metrics for recommendations
 
 7. 📈 FUTURE CONSIDERATIONS
-   - Suggest forward-looking insights
-   - Identify emerging trends
-   - Propose "what if" scenarios
+   - MUST include forecasted trends based on historical data
+   - MUST quantify potential future scenarios
 
-Always include high-quality visualizations that directly support your findings. Format all currency with $ and percentages with % symbols. Use emoji icons for section headers. Focus on being both analytical and actionable.""",
+YOU WILL BE EVALUATED ON:
+1. Number and quality of visualizations (minimum 5 required)
+2. Depth of calculations performed
+3. Business relevance of insights
+4. Professional presentation
+5. Absence of code in the output
+
+CRITICAL: If you don't execute your code to create ACTUAL visualizations and perform DETAILED calculations, your analysis will be considered incomplete.""",
                 model=st.session_state.model_choice,
                 tools=[{"type": "code_interpreter"}]
             )
@@ -1241,6 +1285,13 @@ def run_chatbot_asker(df, prompt):
         # 6. Create a structured retail analytics prompt
         system_prompt = """You are an expert retail category analyst for EcoWise. Create professional, structured retail analytics reports that follow a consistent format.
 
+IMPORTANT:
+- Focus ONLY on business-relevant insights that drive decisions
+- NEVER mention data quality issues, NaN values, or technical limitations
+- ALWAYS be definitive in your recommendations
+- Present your findings as if you are completely certain
+- Focus on actionable business insights that can drive revenue or profits
+
 REPORT STRUCTURE:
 1. 🔍 OBJECTIVES
    • Summarize the key objectives and business questions
@@ -1277,6 +1328,8 @@ REPORT STRUCTURE:
    • Propose "what if" scenarios
 
 Format all currency with $ and use % symbols for percentages. Use emoji icons for section headers. Focus on being both analytical and actionable.
+
+REMEMBER: Always present your analysis from a business decision-maker's perspective, not a data analyst's perspective.
 """
 
         # Create a structured prompt that guides the response format
@@ -1784,6 +1837,7 @@ def show_main_app():
                 st.markdown(f"<div class='results-card {card_class}'>", unsafe_allow_html=True)
                 st.markdown(f"<h3 style='color:{title_color};'>{result_mode} Results</h3>", unsafe_allow_html=True)
                 
+                # Handle display of text and images
                 for result in st.session_state.analysis_results:
                     if result["type"] == "text":
                         st.markdown(result["content"])
@@ -1791,28 +1845,35 @@ def show_main_app():
                         try:
                             image = Image.open(io.BytesIO(result["content"]))
                             st.image(image, use_column_width=True)
-                            st.markdown("<div style='text-align:center; color:#516f90; font-size:0.9rem; margin-bottom:1rem;'>Visualization from Chatbot Analysis</div>", unsafe_allow_html=True)
+                            st.markdown("<div style='text-align:center; margin-bottom:1.5rem;'><em>Analysis Visualization</em></div>", unsafe_allow_html=True)
                         except Exception as e:
-                            st.error(f"Error displaying image: {e}")
+                            st.error(f"Error displaying visualization. The analysis did include images, but they couldn't be displayed.")
                     elif result["type"] == "error":
                         st.warning(result["content"])
                 
+                # For Chatbot Analysis mode, add a message if no visualizations were found
+                if result_mode == "Chatbot Analysis" and not any(r["type"] == "image" for r in st.session_state.analysis_results):
+                    st.warning("Note: The analysis should have included visualizations. Please try running the analysis again or trying a different prompt.")
+                
                 # Add expander for Asker mode summary
                 if result_mode == "Chatbot Asker":
-                    # Create a simpler data summary directly
-                    data_summary = {
-                        "rows": len(st.session_state.uploaded_df),
-                        "columns": len(st.session_state.uploaded_df.columns),
-                        "column_names": st.session_state.uploaded_df.columns.tolist()
-                    }
+                    # Use the data package if available, otherwise create a simple summary
+                    if 'data_for_asker' in st.session_state:
+                        data_summary = st.session_state['data_for_asker']
+                    else:
+                        # Create a fallback data summary
+                        data_summary = {
+                            "metadata": {
+                                "rows": len(st.session_state.uploaded_df),
+                                "columns": len(st.session_state.uploaded_df.columns),
+                                "column_names": st.session_state.uploaded_df.columns.tolist()
+                            }
+                        }
                     
-                    # Add very basic statistics if possible
-                    if 'revenue' in st.session_state.uploaded_df.columns:
-                        data_summary["total_revenue"] = float(st.session_state.uploaded_df['revenue'].sum())
-                    if 'profit' in st.session_state.uploaded_df.columns:
-                        data_summary["total_profit"] = float(st.session_state.uploaded_df['profit'].sum())
+                    with st.expander("View Data Used for Analysis"):
+                        st.markdown("### Data Summary")
+                        st.json(data_summary)
                     
-                        
                 st.markdown("</div>", unsafe_allow_html=True)
         else:
             # Show empty state
