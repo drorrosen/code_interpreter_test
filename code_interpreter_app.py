@@ -1577,6 +1577,11 @@ def show_main_app():
             "gpt-4o-mini",
             "gpt-4o",
             "gpt-4-turbo",
+            "o4-mini",
+            "o3-mini",
+            "o1-mini",
+            "gpt-4.1",
+            "gpt-4.1-mini"
         ]
         model_choice = st.selectbox(
             "Choose Model",
